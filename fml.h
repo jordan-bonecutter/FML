@@ -16,15 +16,29 @@ typedef void fml_data;/* data (similar to np.ndarray except type is always float
 typedef void fml_dataset;/* dataset (array of data) */
 typedef void fml_data_shape;/* shape of fml_data */
 
+typedef enum{
+  FML_NET_COST_TYPE_QUADRATIC,
+  FML_NET_COST_TYPE_COUNT
+}fml_net_cost_type;
+
+typedef enum{
+  FML_NET_REGULARIZATION_TYPE_NONE,
+  FML_NET_REGULARIZATION_TYPE_L1,
+  FML_NET_REGULARIZATION_TYPE_L2,
+  FML_NET_REGULARIZATION_TYPE_COUNT
+}fml_net_regularization_type;
+
 fml_net* fml_net_create(unsigned int n, ...);/* allocate new neural network w/ specified layers */
 void     fml_net_set_learning_rate(fml_net* net, double learning_rate);/* set learning rate for neural network */
 double   fml_net_get_learning_rate(fml_net*);/* get learning rate for neural network */
+void     fml_net_set_cost_type(fml_net* net, fml_net_cost_type t);
+void     fml_net_set_regularization_type(fml_net* net, fml_net_regularization_type t, double weight);
 void     fml_train(fml_net* net, fml_dataset* dataset, unsigned int epochs, unsigned int minibatch_size);
 void     fml_net_destroy(fml_net* net);
 void     fml_net_dump(fml_net* net, FILE* file);
 fml_net* fml_net_parse(FILE* file);
 
-fml_dataset* fml_dataset_create(fml_data* data, unsigned int total, unsigned int n_train, unsigned int n_validate, unsigned int n_test);
+fml_dataset* fml_dataset_create(fml_data* samples, fml_data* labels, unsigned int total, unsigned int n_train, unsigned int n_validate, unsigned int n_test);
 fml_dataset* fml_dataset_destroy(fml_dataset* dataset, bool destroy_data);
 
 fml_data_shape* fml_data_shape_create(unsigned int n, ...)
