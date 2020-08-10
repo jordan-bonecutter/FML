@@ -8,6 +8,7 @@
 #define FML_INTERNAL_INCLUDE_GUARDS
 
 #include <stdbool.h>
+#include <stdarg.h>
 
 typedef struct{
   unsigned int n_dimensions;
@@ -18,6 +19,9 @@ typedef struct{
   fml_data_shape* shape;
   double* data;
 }fml_data;
+
+fml_data* fml_data_create(fml_data_shape* shape);
+fml_data* fml_data_create_with_data(fml_data_shape* shape, double* data);
 
 typedef struct{
   unsigned int n_data, n_train, n_validate, n_test;
@@ -52,7 +56,7 @@ typedef struct{
   fml_layer_type layer_type;
   fml_data_shape* input_shape;
   fml_data* activations;
-  fml_data* gradient;
+  fml_data* activation_gradient;
 }fml_layer_header;
 
 void   fml_first_layer_forward(fml_layer_header* layer, fml_data* input);
@@ -61,9 +65,12 @@ void   fml_layer_backprop(fml_layer_header* layer, fml_layer_header* next_layer,
 double fml_layer_output_backprop(fml_layer_header* layer, fml_data* label, fml_net_cost_type cost_type);
 void   fml_layer_input_backprop(fml_layer_header* layer, fml_layer_header* next_layer, fml_data* input);
 void   fml_layer_learn(fml_layer_header* layer);
+void   fml_layer_destroy(fml_layer_header* layer);
 
+fml_data_shape* fml_data_shape_create(unsigned int d0, ...);
+fml_data_shape* fml_data_shape_copy(fml_data_shape* shape);
 bool fml_data_have_same_shape(fml_data* d1, fml_data* d2);
-unsigned int fml_data_size(fml_data* data);
+unsigned int fml_data_shape_size(fml_data_shape* data);
 
 typedef struct{
   fml_net_cost_type cost_type;

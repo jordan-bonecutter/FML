@@ -7,6 +7,9 @@
 #ifndef FML_H_INCLUDE_GUARD
 #define FML_H_INCLUDE_GUARD
 
+#define user_owned
+#define object_owned
+
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -33,29 +36,32 @@ void     fml_net_set_learning_rate(fml_net* net, double learning_rate);/* set le
 double   fml_net_get_learning_rate(fml_net*);/* get learning rate for neural network */
 void     fml_net_set_cost_type(fml_net* net, fml_net_cost_type t);
 void     fml_net_set_regularization_type(fml_net* net, fml_net_regularization_type t, double weight);
-void     fml_train(fml_net* net, fml_dataset* dataset, unsigned int epochs, unsigned int minibatch_size);
+void     fml_train(fml_net* net, user_owned fml_dataset* dataset, unsigned int epochs, unsigned int minibatch_size);
 void     fml_net_destroy(fml_net* net);
-void     fml_net_dump(fml_net* net, FILE* file);
-fml_net* fml_net_parse(FILE* file);
+void     fml_net_dump(fml_net* net, user_owned FILE* file);
+fml_net* fml_net_parse(user_owned FILE* file);
 
-fml_dataset* fml_dataset_create(fml_data* samples, fml_data* labels, unsigned int total, unsigned int n_train, unsigned int n_validate, unsigned int n_test);
+fml_dataset* fml_dataset_create(object_owned fml_data* samples, object_owned fml_data* labels, unsigned int total, unsigned int n_train, unsigned int n_validate, unsigned int n_test);
 fml_dataset* fml_dataset_destroy(fml_dataset* dataset, bool destroy_data);
 
 fml_data_shape* fml_data_shape_create(unsigned int n, ...)
 void            fml_data_shape_destroy(fml_data_shape* shape);
+fml_data_shape* fml_data_shape_copy(fml_data* data);
 
-fml_data* fml_data_create(fml_data_shape* shape, double* data);
+fml_data* fml_data_create(object_owned fml_data_shape* shape);
+fml_data* fml_data_create_with_data(object_owned fml_data_shape* shape, object_owned double* data);
 void      fml_data_destroy(fml_data* data);
 double    fml_data_get(fml_data* data, unsigned int n, ...);
 void      fml_data_set(fml_data* data, double set, unsigned int n, ...);
 
-fml_layer* fml_layer_fully_connected_create(fml_data_shape* input, fml_data_size* output);
-fml_layer* fml_layer_signoid_create(fml_data_shape* size);
-fml_layer* fml_layer_tanh_create(fml_data_shape* size);
-fml_layer* fml_layer_relu_create(fml_data_shape* size);
-fml_layer* fml_layer_leaky_relu_create(fml_data_shape* size, double alpha);
-fml_layer* fml_layer_batch_normalize(fml_data_shape* size);
-fml_layer* fml_layer_convolution_create(fml_data_shape* input, fml_data_size* filter_size, unsigned int n_filters);
+fml_layer* fml_layer_fully_connected_create(object_owned fml_data_shape* input, object_owned fml_data_size* output);
+fml_layer* fml_layer_sigmoid_create(object_owned object_owned fml_data_shape* size);
+fml_layer* fml_layer_tanh_create(object_owned fml_data_shape* size);
+fml_layer* fml_layer_relu_create(object_owned fml_data_shape* size);
+fml_layer* fml_layer_leaky_relu_create(object_owned fml_data_shape* size, double alpha);
+fml_layer* fml_layer_batch_normalize(object_owned fml_data_shape* size);
+fml_layer* fml_layer_convolution_create(object_owned fml_data_shape* input, object_owned fml_data_size* filter_size, unsigned int n_filters);
+void       fml_layer_destroy(fml_layer* layer);
 
 #endif
 
