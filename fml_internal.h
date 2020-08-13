@@ -9,6 +9,7 @@
 
 #include <stdbool.h>
 #include <stdarg.h>
+#include "../memtools.h"
 
 typedef struct{
   unsigned int n_dimensions;
@@ -55,7 +56,7 @@ typedef enum {
 typedef struct{
   fml_layer_type layer_type;
   fml_data_shape* input_shape;
-  fml_data* activations;
+  fml_data* activation;
   fml_data* activation_gradient;
 }fml_layer_header;
 
@@ -71,6 +72,7 @@ fml_data_shape* fml_data_shape_create(unsigned int d0, ...);
 fml_data_shape* fml_data_shape_copy(fml_data_shape* shape);
 bool fml_data_have_same_shape(fml_data* d1, fml_data* d2);
 unsigned int fml_data_shape_size(fml_data_shape* data);
+unsigned int fml_data_shape_get_dimension(fml_data_shape* data, unsigned int dim);
 
 typedef struct{
   fml_net_cost_type cost_type;

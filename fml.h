@@ -46,7 +46,8 @@ fml_dataset* fml_dataset_destroy(fml_dataset* dataset, bool destroy_data);
 
 fml_data_shape* fml_data_shape_create(unsigned int n, ...)
 void            fml_data_shape_destroy(fml_data_shape* shape);
-fml_data_shape* fml_data_shape_copy(fml_data* data);
+fml_data_shape* fml_data_shape_copy(fml_data_shape* data);
+unsigned int    fml_data_shape_get_dimension(fml_data_shape* data, unsigned int dim);
 
 fml_data* fml_data_create(object_owned fml_data_shape* shape);
 fml_data* fml_data_create_with_data(object_owned fml_data_shape* shape, object_owned double* data);
@@ -54,13 +55,13 @@ void      fml_data_destroy(fml_data* data);
 double    fml_data_get(fml_data* data, unsigned int n, ...);
 void      fml_data_set(fml_data* data, double set, unsigned int n, ...);
 
-fml_layer* fml_layer_fully_connected_create(object_owned fml_data_shape* input, object_owned fml_data_size* output);
+fml_layer* fml_layer_fully_connected_create(object_owned fml_data_shape* input, object_owned fml_data_shape* output);
 fml_layer* fml_layer_sigmoid_create(object_owned object_owned fml_data_shape* size);
 fml_layer* fml_layer_tanh_create(object_owned fml_data_shape* size);
 fml_layer* fml_layer_relu_create(object_owned fml_data_shape* size);
 fml_layer* fml_layer_leaky_relu_create(object_owned fml_data_shape* size, double alpha);
 fml_layer* fml_layer_batch_normalize(object_owned fml_data_shape* size);
-fml_layer* fml_layer_convolution_create(object_owned fml_data_shape* input, object_owned fml_data_size* filter_size, unsigned int n_filters);
+fml_layer* fml_layer_convolution_create(object_owned fml_data_shape* input, object_owned fml_data_shape* filter_size, unsigned int n_filters);
 void       fml_layer_destroy(fml_layer* layer);
 
 #endif
