@@ -4,7 +4,7 @@
 /* jordan bonecutter * * * * * * * * * * * * * * * * * * * * * * * * */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "fml_internal.h"
+#include "fml_net.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,12 +14,12 @@ fml_net* fml_net_create(int n, ...){
   int i;
   fml_net* ret = malloc((sizeof *ret) + (sizeof *ret->layers)*n);
   memcomment(ret, "Neural network object");
-  fml_layer_header** curr = ret->layers;
+  fml_layer** curr = ret->layers;
 
   va_start(vargs, n);
   for(i = 0; i < n; ++curr, ++i){
     memtest(curr, "Neural network layer %d\n", i);
-    *curr = va_arg(vargs, fml_layer_header*);
+    *curr = va_arg(vargs, fml_layer*);
   }
 
   va_end(vargs);
@@ -59,9 +59,9 @@ static void fml_net_forward(fml_net* net, fml_data* data){
   memtest(net, "testing net in fml_net_forward");
   unsigned int layer;
   memtest(net->layers, "testing net->layers in fml_net_forward");
-  fml_layer_header** curr = net->layers, **prev;
+  fml_layer** curr = net->layers, **prev;
 
-  fml_first_layer_forward(*curr, data);
+  fml_layer_input_forward(*curr, data);
   prev = curr;
   ++curr;
   for(layer = 2; layer < net->n_layers; ++layer, prev = curr, ++curr){
@@ -77,21 +77,22 @@ static void fml_net_forward(fml_net* net, fml_data* data){
 //void fml_layer_backprop(fml_layer_header* layer, fml_layer* next_layer, fml_layer_header* prev_layer);
 static double fml_net_backprop(fml_net* net, fml_data* sample, fml_data* label){
   double loss;
-  fml_layer_header** curr;
+  fml_layer** curr;
   memtest(net, "testing net in fml_net_backprop");
   int layer = net->n_layers - 1;
   curr = net->layers + layer;
 
-  loss = fml_layer_output_backprop(*curr, label, net->cost_type);
+  //loss = fml_layer_output_backprop(*curr, label, net->cost_type);
+  loss = fml_layer_output_backprop(*curr, label, NULL);
   for(--curr, --layer; layer > 0; --layer, --curr){
     memtest(curr, "testing curr in fml_net_backprop at layer %u", layer);
     memtest(curr + 1, "testing curr + 1 in fml_net_backprop at layer %u", layer);
     memtest(curr - 1, "testing curr - 1 in fml_net_backprop at layer %u", layer);
-    fml_layer_backprop(*curr, *(curr + 1), *(curr - 1));
+    fml_layer_backprop(*curr, *(curr + 1));
   }
   memtest(curr, "testing curr in fml_net_backprop at final layer %u", layer);
   memtest(curr + 1, "testing curr + 1 in fml_net_backprop at final layer %u", layer);
-  fml_layer_input_backprop(*curr, *(curr + 1), sample);
+  fml_layer_input_backprop(*curr, *(curr + 1));
 
   return loss; 
 }
@@ -115,7 +116,7 @@ void fml_train(fml_net* net, fml_dataset* dataset, unsigned int epochs, unsigned
 }
 
 void fml_net_destroy(fml_net* net){
-  fml_layer_header** curr;
+  fml_layer** curr;
   int i;
 
   memtest(net, "testing net in fml_net_destroy");
