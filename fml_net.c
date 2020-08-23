@@ -84,15 +84,12 @@ static double fml_net_backprop(fml_net* net, fml_data* sample, fml_data* label){
 
   //loss = fml_layer_output_backprop(*curr, label, net->cost_type);
   loss = fml_layer_output_backprop(*curr, label, NULL);
-  for(--curr, --layer; layer > 0; --layer, --curr){
+  for(--curr, --layer; layer >= 0; --layer, --curr){
     memtest(curr, "testing curr in fml_net_backprop at layer %u", layer);
     memtest(curr + 1, "testing curr + 1 in fml_net_backprop at layer %u", layer);
     memtest(curr - 1, "testing curr - 1 in fml_net_backprop at layer %u", layer);
     fml_layer_backprop(*curr, *(curr + 1));
   }
-  memtest(curr, "testing curr in fml_net_backprop at final layer %u", layer);
-  memtest(curr + 1, "testing curr + 1 in fml_net_backprop at final layer %u", layer);
-  fml_layer_input_backprop(*curr, *(curr + 1));
 
   return loss; 
 }
