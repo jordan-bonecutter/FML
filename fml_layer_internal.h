@@ -28,5 +28,7 @@ typedef struct{
   fml_data* activation_gradient;
 }fml_layer_header;
 
+void fml_layer_header_destroy_items(fml_layer_header *header);
+
 #endif
 

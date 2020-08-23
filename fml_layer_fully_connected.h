@@ -19,9 +19,10 @@ typedef struct{
 fml_layer_header* fml_layer_fully_connected_create(fml_data_shape* input, fml_data_shape* output);
 void   fml_layer_fully_connected_input_forward(fml_layer_header* layer, fml_data* input);
 void   fml_layer_fully_connected_forward(fml_layer_header* layer, fml_layer_header* prev_layer);
-void   fml_layer_fully_connected_backprop(fml_layer_header* layer, fml_layer_header* next_layer);
-double fml_layer_fully_connected_output_backprop(fml_layer_header* layer, fml_data* label, cost_function c);
-void   fml_layer_fully_connected_learn(fml_layer_header* layer);
+void   fml_layer_fully_connected_backprop(fml_layer_header* layer, fml_layer_header* prev_layer);
+double fml_layer_fully_connected_output_backprop(fml_layer_header* layer, fml_layer_header *prev_layer, fml_data* label, cost_function c);
+void   fml_layer_fully_connected_input_backprop(fml_layer_header* layer, fml_data* input);
+void   fml_layer_fully_connected_learn(fml_layer_header* layer, double rate);
 void   fml_layer_fully_connected_destroy(fml_layer_header* layer);
 
 #endif

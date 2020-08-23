@@ -13,6 +13,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "fml_layer.h"
+#include "fml_net.h"
+#include "fml_data.h"
+
+#if 0
 typedef void fml_net;/* neural network structure for fml */
 typedef void fml_layer;/* neural network layer for fml */
 typedef void fml_data;/* data (similar to np.ndarray except type is always float64) */
@@ -31,7 +36,7 @@ typedef enum{
   FML_NET_REGULARIZATION_TYPE_COUNT
 }fml_net_regularization_type;
 
-fml_net* fml_net_create(unsigned int n, ...);/* allocate new neural network w/ specified layers */
+fml_net* fml_net_create(...);/* allocate new neural network w/ specified layers */
 void     fml_net_set_learning_rate(fml_net* net, double learning_rate);/* set learning rate for neural network */
 double   fml_net_get_learning_rate(fml_net*);/* get learning rate for neural network */
 void     fml_net_set_cost_type(fml_net* net, fml_net_cost_type t);
@@ -52,8 +57,6 @@ unsigned int    fml_data_shape_get_dimension(fml_data_shape* data, unsigned int 
 fml_data* fml_data_create(object_owned fml_data_shape* shape);
 fml_data* fml_data_create_with_data(object_owned fml_data_shape* shape, object_owned double* data);
 void      fml_data_destroy(fml_data* data);
-double    fml_data_get(fml_data* data, unsigned int n, ...);
-void      fml_data_set(fml_data* data, double set, unsigned int n, ...);
 
 fml_layer* fml_layer_fully_connected_create(object_owned fml_data_shape* input, object_owned fml_data_shape* output);
 fml_layer* fml_layer_sigmoid_create(object_owned object_owned fml_data_shape* size);
@@ -63,6 +66,7 @@ fml_layer* fml_layer_leaky_relu_create(object_owned fml_data_shape* size, double
 fml_layer* fml_layer_batch_normalize(object_owned fml_data_shape* size);
 fml_layer* fml_layer_convolution_create(object_owned fml_data_shape* input, object_owned fml_data_shape* filter_size, unsigned int n_filters);
 void       fml_layer_destroy(fml_layer* layer);
+#endif
 
 #endif
 

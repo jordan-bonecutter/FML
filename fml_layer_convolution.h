@@ -19,9 +19,10 @@ typedef struct{
 
 void   fml_layer_input_convolution_forward(fml_layer_header* layer, fml_data* input);
 void   fml_layer_convolution_forward(fml_layer_header* layer, fml_layer_header* prev_layer);
-void   fml_layer_convolution_backprop(fml_layer_header* layer, fml_layer_header* next_layer, fml_layer_header* prev_layer);
-double fml_layer_output_convolution_backprop(fml_layer_header* layer, fml_data* label, cost_function c);
-void   fml_layer_convolution_learn(fml_layer_header* layer);
+void   fml_layer_convolution_backprop(fml_layer_header* layer, fml_layer_header* prev_layer);
+double fml_layer_output_convolution_backprop(fml_layer_header* layer, fml_layer_header* prev_layer, fml_data* label, cost_function c);
+void   fml_layer_convolution_input_backprop(fml_layer_header* layer, fml_data* input);
+void   fml_layer_convolution_learn(fml_layer_header* layer, double rate);
 void   fml_layer_convolution_destroy(fml_layer_header* layer);
 
 #endif

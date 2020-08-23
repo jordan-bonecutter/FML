@@ -49,8 +49,16 @@ void fml_net_set_regularization_type(fml_net* net, fml_net_regularization_type t
   net->regularization_weight = weight;
 }
 
-static void fml_net_learn(fml_net* net){
+static void fml_net_learn(fml_net* net, unsigned epoch_size){
   memtest(net, "testing net in fml_net_learn");
+  fml_layer **curr;
+
+  for(curr = net->layers; curr != net->layers + net->n_layers; ++curr){
+    memtest(curr, "testing curr in %d iteration in fml_net_learn", (curr - net->layers)/(sizeof *curr) + 1);
+    memtest(*curr, "testing *curr in %d iteration in fml_net_learn", (curr - net->layers) / (sizeof *curr) + 1);
+    fml_layer_learn(*curr, net->learning_rate / ((double)epoch_size));
+  }
+
   return;
 }
 
@@ -82,14 +90,13 @@ static double fml_net_backprop(fml_net* net, fml_data* sample, fml_data* label){
   int layer = net->n_layers - 1;
   curr = net->layers + layer;
 
-  //loss = fml_layer_output_backprop(*curr, label, net->cost_type);
-  loss = fml_layer_output_backprop(*curr, label, NULL);
-  for(--curr, --layer; layer >= 0; --layer, --curr){
+  loss = fml_layer_output_backprop(*curr, *(curr - 1), label, NULL);
+  for(--curr, --layer; layer > 0; --layer, --curr){
     memtest(curr, "testing curr in fml_net_backprop at layer %u", layer);
-    memtest(curr + 1, "testing curr + 1 in fml_net_backprop at layer %u", layer);
     memtest(curr - 1, "testing curr - 1 in fml_net_backprop at layer %u", layer);
-    fml_layer_backprop(*curr, *(curr + 1));
+    fml_layer_backprop(*curr, *(curr - 1));
   }
+  fml_layer_input_backprop(*curr, sample);
 
   return loss; 
 }
@@ -100,9 +107,11 @@ void fml_train(fml_net* net, fml_dataset* dataset, unsigned int epochs, unsigned
 
   for(iters_since_learned = epoch = 0; epoch < epochs; ++epoch, ++iters_since_learned){
     memtest(dataset, "testing dataset in fml_train at epoch %d", epoch);
-    for(curr_sample = dataset->samples, curr_label = dataset->labels, i = 0; i < dataset->n_train; ++i, ++curr_sample, ++curr_label){
+    for(curr_sample = dataset->samples, curr_label = dataset->labels, i = 0; 
+        i < dataset->n_train; ++i, ++curr_sample, ++curr_label)
+    {
       if(iters_since_learned == minibatch_size){
-        fml_net_learn(net);
+        fml_net_learn(net, minibatch_size);
         iters_since_learned = 0;
       }
     
