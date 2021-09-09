@@ -12,7 +12,7 @@ LMEMTOOLS = ../memtools/libmemtools.a
 CC        = $(COMPILER) $(FLAGS) $(DEBUG) $(IMEMTOOLS)
 CO        = $(CC) -c
 
-all: fml_layer.o fml_net.o fml_layer_fully_connected.o fml_layer_convolution.o
+all: fml_layer.o fml_net.o fml_layer_fully_connected.o fml_layer_convolution.o fml_data.o
 
 fml_layer.o: src/fml_layer.c
 	$(CO) src/fml_layer.c -o fml_layer.o
@@ -25,6 +25,9 @@ fml_layer_convolution.o: src/fml_layer_internal.h src/fml_layer_convolution.h sr
 
 fml_net.o: src/fml_net.c
 	$(CO) src/fml_net.c -o fml_net.o
+
+fml_data.o: src/fml_data.h src/fml_data.c
+	$(CO) src/fml_data.c -o fml_data.o
 
 clean:
 	rm -rf *.o

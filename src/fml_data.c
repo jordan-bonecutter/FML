@@ -1,15 +1,14 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/* fml_data.h  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/* 6 august 2020 * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* fml_data.c  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* 8 september 2021  * * * * * * * * * * * * * * * * * * * * * * * * */
 /* jordan bonecutter * * * * * * * * * * * * * * * * * * * * * * * * */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef FML_DATA_INCLUDE_GUARD
-#define FML_DATA_INCLUDE_GUARD
+#include "fml_data.h"
+#include <assert.h>
+#include <stdlib.h>
 
-#include "fml_standard.h"
-#include <stdarg.h>
-
+/*
 typedef struct{
   unsigned int n_dimensions;
   unsigned int* dimension;
@@ -17,12 +16,34 @@ typedef struct{
 
 typedef struct{
   fml_data_shape shape;
-  double data[];
+  double* data;
 }fml_data;
 
 typedef double (*cost_function)(fml_data *output, fml_data *label, fml_data *gradient);
+*/
 
-fml_data* fml_data_create(fml_data_shape* shape);
+fml_data* fml_data_create(fml_data_shape* shape) {
+  fml_data *ret;
+  size_t total_data_size;
+
+  memtest(shape, "testing input shape in fml_data_create");
+
+  // Calculate total data size as product of all dimensions
+  total_data_size = 1;
+  unsigned int *head = shape->dimension;
+  for(unsigned int i = 0; i < shape->n_dimensions; ++i, ++head) {
+    memtest(head, "Testing fml_data_shape[%d] with length %d", i, shape->n_dimensions);
+    total_data_size *= ((size_t)*head);
+  }
+
+  ret = malloc(sizeof(fml_data) + total_data_size);
+  memcomment(ret, "fml_data in fml_data_create");
+  ret->shape = *shape;
+
+  return ret;
+}
+
+#if 0
 fml_data* fml_data_create_with_data(fml_data_shape* shape, double* data);
 unsigned int fml_data_size(fml_data *data);
 void fml_data_get_dimensions(fml_data *data, unsigned dimensions, ...);
@@ -54,6 +75,5 @@ void fml_data_reset(fml_data *A);
 double fml_data_subscript_get(fml_data *data, int n, ...);
 void fml_data_subscript_set(fml_data *data, double val, int n, ...);
 void fml_data_destroy(fml_data *A);
-
 #endif
 
