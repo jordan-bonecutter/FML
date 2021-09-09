@@ -3,10 +3,11 @@
 #
 #
 
+WROOT     = `git rev-parse --show-toplevel`
 COMPILER  = gcc
 FLAGS     = -Wall -ansi -std=c99 -DMEMTOOLS
 DEBUG     = -O0 -g -DDEBUG
-IMEMTOOLS = -I ../memtools/
+IMEMTOOLS = -I $(WROOT)/../memtools/
 LMEMTOOLS = ../memtools/libmemtools.a
 CC        = $(COMPILER) $(FLAGS) $(DEBUG) $(IMEMTOOLS)
 CO        = $(CC) -c
